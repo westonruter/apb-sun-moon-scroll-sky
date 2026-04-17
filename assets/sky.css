@@ -1,0 +1,327 @@
+/**
+ * APB Sun & Moon Scroll Sky — frontend stylesheet.
+ *
+ * All visual and animation logic is wrapped in an @supports check for
+ * CSS scroll-driven animations (`animation-timeline: scroll()`), so browsers
+ * without support render nothing and the page is unaffected.
+ *
+ * Uses only `opacity` and `transform` animations for performance.
+ *
+ * Prefix: .apb-sms-* (APB Sun & Moon Scroll Sky)
+ */
+
+@supports (animation-timeline: scroll()) {
+
+	/* -------------------------------------------------------------------
+	 * Root custom property, cascades to text color transitions below.
+	 * ------------------------------------------------------------------- */
+	:root {
+		--apb-sms-text-color: inherit;
+	}
+
+	/* -------------------------------------------------------------------
+	 * Sky container: fixed, full viewport, behind page content.
+	 * ------------------------------------------------------------------- */
+	.apb-sms-sky {
+		position: fixed;
+		inset: 0;
+		width: 100vw;
+		height: 100vh;
+		z-index: -1;
+		pointer-events: none;
+		overflow: hidden;
+		/* Respect users who explicitly prefer reduced motion. */
+	}
+
+	/* -------------------------------------------------------------------
+	 * Stacked gradient layers.
+	 *
+	 * Each layer sits full-bleed; opacity is driven by a scroll-linked
+	 * keyframe animation tied to the root scroll timeline so they
+	 * crossfade as the user scrolls.
+	 * ------------------------------------------------------------------- */
+	.apb-sms-layer {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		will-change: opacity;
+		animation-timeline: scroll(root);
+		animation-duration: 1ms; /* duration is ignored with scroll timelines; non-zero required */
+		animation-timing-function: linear;
+		animation-fill-mode: both;
+	}
+
+	/* Sunrise: warm peach → soft yellow, dominant at the very top, fading by 15%. */
+	.apb-sms-layer--sunrise {
+		background: linear-gradient(
+			180deg,
+			#ff9a76 0%,
+			#ffb37a 30%,
+			#ffd59e 60%,
+			#ffe9c6 100%
+		);
+		animation-name: apb-sms-sunrise-fade;
+	}
+
+	/* Day: clean blue sky, holds 15% → 75%. */
+	.apb-sms-layer--day {
+		background: linear-gradient(
+			180deg,
+			#4a90e2 0%,
+			#7ab8f0 50%,
+			#c9e4fb 100%
+		);
+		animation-name: apb-sms-day-fade;
+	}
+
+	/* Sunset: orange → purple, fades in 75% → 90%. */
+	.apb-sms-layer--sunset {
+		background: linear-gradient(
+			180deg,
+			#ff6b6b 0%,
+			#e96e8a 40%,
+			#7e4b8a 80%,
+			#3a2d6d 100%
+		);
+		animation-name: apb-sms-sunset-fade;
+	}
+
+	/* Night: deep indigo, fades in 90% → 100%, hosts the star field. */
+	.apb-sms-layer--night {
+		background: linear-gradient(
+			180deg,
+			#0b1033 0%,
+			#161a44 50%,
+			#0a0d24 100%
+		);
+		animation-name: apb-sms-night-fade;
+	}
+
+	/* -------------------------------------------------------------------
+	 * Starfield — a radial-gradient sprinkle of stars inside night layer.
+	 * ------------------------------------------------------------------- */
+	.apb-sms-stars {
+		position: absolute;
+		inset: 0;
+		background-image:
+			radial-gradient( 1px 1px at 12%  18%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1px 1px at 27%  72%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1px 1px at 42%  34%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1px 1px at 55%  88%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1.5px 1.5px at 63% 12%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1px 1px at 71%  56%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1px 1px at 80%  24%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1.5px 1.5px at 88% 68%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1px 1px at 95%  40%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1px 1px at 7%   50%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1px 1px at 33%  10%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1px 1px at 48%  60%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1px 1px at 58%  40%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1px 1px at 77%  80%, #ffffff 50%, transparent 100% ),
+			radial-gradient( 1.5px 1.5px at 18% 84%, #ffffff 50%, transparent 100% );
+		background-repeat: no-repeat;
+	}
+
+	/* -------------------------------------------------------------------
+	 * Sun — glowing disc on the right edge.
+	 * Starts: bottom-right at 0% scroll
+	 * Mid:    half viewport height at 50% scroll
+	 * End:    off-screen bottom-right by 90% scroll
+	 * ------------------------------------------------------------------- */
+	.apb-sms-sun {
+		position: fixed;
+		top: 0;
+		right: 6vw;
+		width: 120px;
+		height: 120px;
+		border-radius: 50%;
+		background: radial-gradient(
+			circle at 50% 50%,
+			#fff9c4 0%,
+			#ffe082 45%,
+			#ffb74d 80%,
+			rgba( 255, 167, 38, 0 ) 100%
+		);
+		box-shadow:
+			0 0 40px rgba( 255, 213, 128, 0.85 ),
+			0 0 90px rgba( 255, 167, 38, 0.55 );
+		will-change: transform, opacity;
+		animation-timeline: scroll(root);
+		animation-duration: 1ms;
+		animation-timing-function: linear;
+		animation-fill-mode: both;
+		animation-name: apb-sms-sun-move;
+	}
+
+	/* -------------------------------------------------------------------
+	 * Moon — slides in from top-right starting at 90% scroll.
+	 * ------------------------------------------------------------------- */
+	.apb-sms-moon {
+		position: fixed;
+		top: 0;
+		right: 8vw;
+		width: 90px;
+		height: 90px;
+		border-radius: 50%;
+		background: radial-gradient(
+			circle at 35% 35%,
+			#f5f3ea 0%,
+			#d6d2c4 60%,
+			#9a9689 100%
+		);
+		box-shadow:
+			0 0 30px rgba( 245, 243, 234, 0.55 ),
+			inset -8px -10px 22px rgba( 0, 0, 0, 0.22 );
+		opacity: 0;
+		will-change: transform, opacity;
+		animation-timeline: scroll(root);
+		animation-duration: 1ms;
+		animation-timing-function: linear;
+		animation-fill-mode: both;
+		animation-name: apb-sms-moon-arrive;
+	}
+
+	/* -------------------------------------------------------------------
+	 * Text color transition.
+	 *
+	 * A scroll-linked keyframe animation mutates the --apb-sms-text-color
+	 * custom property on :root. Elements opt in to it via `color` so the
+	 * transition cascades to headings, paragraphs, and links.
+	 * ------------------------------------------------------------------- */
+	:root {
+		animation-timeline: scroll(root);
+		animation-duration: 1ms;
+		animation-timing-function: linear;
+		animation-fill-mode: both;
+		animation-name: apb-sms-text-color-shift;
+	}
+
+	body,
+	body h1,
+	body h2,
+	body h3,
+	body h4,
+	body h5,
+	body h6,
+	body p,
+	body a {
+		color: var( --apb-sms-text-color, inherit );
+		transition: color 300ms linear;
+	}
+
+	/* -------------------------------------------------------------------
+	 * Keyframes.
+	 *
+	 * All keyframe percentages map to scroll position of the root element
+	 * (0% = top of page, 100% = maximum scroll).
+	 * ------------------------------------------------------------------- */
+
+	@keyframes apb-sms-sunrise-fade {
+		0%   { opacity: 1; }
+		15%  { opacity: 0; }
+		100% { opacity: 0; }
+	}
+
+	@keyframes apb-sms-day-fade {
+		0%   { opacity: 0; }
+		15%  { opacity: 1; }
+		75%  { opacity: 1; }
+		90%  { opacity: 0; }
+		100% { opacity: 0; }
+	}
+
+	@keyframes apb-sms-sunset-fade {
+		0%   { opacity: 0; }
+		75%  { opacity: 0; }
+		90%  { opacity: 1; }
+		100% { opacity: 0; }
+	}
+
+	@keyframes apb-sms-night-fade {
+		0%   { opacity: 0; }
+		90%  { opacity: 0; }
+		100% { opacity: 1; }
+	}
+
+	/*
+	 * Sun travel path:
+	 *   0%  → bottom-right (just above the bottom edge).
+	 *  50%  → about halfway up the viewport on the right edge.
+	 *  90%  → off-screen below the bottom-right corner.
+	 * 100%  → remains off-screen while the moon takes over.
+	 */
+	@keyframes apb-sms-sun-move {
+		0% {
+			transform: translateY( calc( 100vh - 160px ) );
+			opacity: 1;
+		}
+		50% {
+			transform: translateY( 50vh );
+			opacity: 1;
+		}
+		85% {
+			transform: translateY( calc( 100vh + 40px ) );
+			opacity: 0.6;
+		}
+		90% {
+			transform: translateY( calc( 100vh + 180px ) );
+			opacity: 0;
+		}
+		100% {
+			transform: translateY( calc( 100vh + 180px ) );
+			opacity: 0;
+		}
+	}
+
+	/*
+	 * Moon: hidden until 90% scroll, then slides down from above into place.
+	 */
+	@keyframes apb-sms-moon-arrive {
+		0% {
+			transform: translateY( -160px );
+			opacity: 0;
+		}
+		90% {
+			transform: translateY( -160px );
+			opacity: 0;
+		}
+		95% {
+			transform: translateY( 6vh );
+			opacity: 0.85;
+		}
+		100% {
+			transform: translateY( 10vh );
+			opacity: 1;
+		}
+	}
+
+	/*
+	 * Text color: keeps the page's native color until the final stretch,
+	 * then shifts to white for the night scene.
+	 */
+	@keyframes apb-sms-text-color-shift {
+		0% {
+			--apb-sms-text-color: inherit;
+		}
+		85% {
+			--apb-sms-text-color: inherit;
+		}
+		90% {
+			--apb-sms-text-color: #ffffff;
+		}
+		100% {
+			--apb-sms-text-color: #ffffff;
+		}
+	}
+
+	/* -------------------------------------------------------------------
+	 * Reduced motion: hide the decorative sky entirely.
+	 * ------------------------------------------------------------------- */
+	@media ( prefers-reduced-motion: reduce ) {
+		.apb-sms-sky {
+			display: none;
+		}
+	}
+}
