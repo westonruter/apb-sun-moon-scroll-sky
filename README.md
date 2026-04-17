@@ -8,11 +8,11 @@ The following prompt was used:
 
 Here is a video showing the user interface and result. _This video was edited for brevity, reducing reducing the length of time waiting for the AI provider to respond in each step._
 
-[![AI-Powered Plugin Builder Demo: APB Sun & Moon Scroll Sky](https://img.youtube.com/vi/R0Vzocie4wE/hqdefault.jpg)(https://youtu.be/R0Vzocie4wE)
+[![AI-Powered Plugin Builder Demo: APB Sun & Moon Scroll Sky](https://img.youtube.com/vi/R0Vzocie4wE/hqdefault.jpg)](https://youtu.be/R0Vzocie4wE)
 
 * This was tested with WordPress on WordPress `trunk` on 7.0-RC2/7.1-alpha at [`5044e95`](https://github.com/WordPress/wordpress-develop/commit/5044e953df6e6bc058f8c6bf2eb9e81e4889a9b1). 
 * The plugin was generated while connected to Anthropic using the Claude Opus 4.7 model.
 * Once the plugin was generated, the Plugin File Editor in WordPress was used to remove a hallucinated class name from a few [`body` selectors](https://github.com/westonruter/apb-sun-moon-scroll-sky/blob/77c8550e6453afc0ba5850550969c3b134aeb69e/assets/sky.css#L201-L209).
 * The Gutenberg plugin is active with the changes from [PR #77254](https://github.com/WordPress/gutenberg/pull/77254) present, namely on `trunk` at [`a456405`](https://github.com/WordPress/gutenberg/commit/a456405b4dd7416cdf9b83fd8bb6236bc796d941). This will be included with WordPress 7.0.
 * The Plugin Builder includes additional fixes from PR [westonruter/wp-ai-experiments#44](https://github.com/westonruter/wp-ai-experiments/pull/44).
-* This demo was prepared for a talk at [DE{CODE} 2026](https://wpengine.registration.goldcast.io/series/bc7bea38-1f26-4809-b5e0-e3e26a399841): “WordPressⓇ 7.0 Is Here. This Is What It Actually Unlocks/”
+* This demo was prepared for a talk at [DE{CODE} 2026](https://wpengine.registration.goldcast.io/series/bc7bea38-1f26-4809-b5e0-e3e26a399841): “WordPressⓇ 7.0 Is Here. This Is What It Actually Unlocks.”
