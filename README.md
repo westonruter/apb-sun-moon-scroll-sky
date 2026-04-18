@@ -16,3 +16,30 @@ Here is a video showing the user interface and result. _This video was edited fo
 * The Gutenberg plugin is active with the changes from [PR #77254](https://github.com/WordPress/gutenberg/pull/77254) present, namely on `trunk` at [`a456405`](https://github.com/WordPress/gutenberg/commit/a456405b4dd7416cdf9b83fd8bb6236bc796d941). This will be included with WordPress 7.0.
 * The Plugin Builder includes additional fixes from PR [westonruter/wp-ai-experiments#44](https://github.com/westonruter/wp-ai-experiments/pull/44).
 * This demo was prepared for a talk at [DE{CODE} 2026](https://wpengine.registration.goldcast.io/series/bc7bea38-1f26-4809-b5e0-e3e26a399841): “WordPressⓇ 7.0 Is Here. This Is What It Actually Unlocks.”
+* There were some issues with REST API requests timing out so to work around that I increased the timeouts in `wordpress-develop`:
+```diff
+diff --git a/tools/local-env/default.template b/tools/local-env/default.template
+index 995913fb45..8adebe4c58 100644
+--- a/tools/local-env/default.template
++++ b/tools/local-env/default.template
+@@ -30,6 +30,7 @@ server {
+ 		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+ 		fastcgi_pass php:9000;
+ 		fastcgi_index index.php;
++		fastcgi_read_timeout 600s;
+ 		include fastcgi_params;
+ 		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+ 		fastcgi_param PATH_INFO $fastcgi_path_info;
+diff --git a/tools/local-env/php-config.ini b/tools/local-env/php-config.ini
+index 6f98802e5c..a18ccb56f9 100644
+--- a/tools/local-env/php-config.ini
++++ b/tools/local-env/php-config.ini
+@@ -2,6 +2,7 @@ display_errors = On
+ error_reporting = -1
+ upload_max_filesize = 1G
+ post_max_size = 1G
++max_execution_time = 600
+ xdebug.start_with_request=trigger
+ xdebug.discover_client_host=true
+ xdebug.client_host=host.docker.internal
+```
